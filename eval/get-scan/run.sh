@@ -16,7 +16,7 @@ YCSB_PATH="$BASE_DIR/My-YCSB"
 DB_PATH=$(realpath "$BASE_DIR/../leveldb")
 RESULTS_PATH="$BASE_DIR/results"
 
-ITERATIONS=3
+ITERATIONS=1
 
 mkdir -p "$RESULTS_PATH"
 

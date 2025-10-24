@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 # These only run on error
 CLEANUP_TASKS = []
-
+1
 
 class FileSearchBenchmark(BenchmarkFramework):
     def __init__(self, benchresults_cls=BenchResults, cli_args=None):
@@ -42,7 +42,7 @@ class FileSearchBenchmark(BenchmarkFramework):
         self.cache_ext_policy.stop()
 
     def generate_configs(self, configs: List[Dict]) -> List[Dict]:
-        configs = add_config_option("passes", [10], configs)
+        configs = add_config_option("passes", [3], configs)
         configs = add_config_option("cgroup_size", [1 * GiB], configs)
         if self.args.default_only:
             configs = add_config_option(
@@ -52,7 +52,8 @@ class FileSearchBenchmark(BenchmarkFramework):
         else:
             configs = add_config_option(
                 "cgroup_name",
-                [DEFAULT_BASELINE_CGROUP, DEFAULT_CACHE_EXT_CGROUP],
+                #[DEFAULT_BASELINE_CGROUP, DEFAULT_CACHE_EXT_CGROUP],
+                [DEFAULT_CACHE_EXT_CGROUP],
                 configs,
             )
 
@@ -60,6 +61,10 @@ class FileSearchBenchmark(BenchmarkFramework):
         configs = add_config_option(
             "iteration", list(range(1, self.args.iterations + 1)), configs
         )
+        policy_loader_name = os.path.basename(self.cache_ext_policy.loader_path)
+        for config in configs:
+            if config["cgroup_name"] == DEFAULT_CACHE_EXT_CGROUP:
+                config["policy_loader"] = policy_loader_name
         return configs
 
     def before_benchmark(self, config):
